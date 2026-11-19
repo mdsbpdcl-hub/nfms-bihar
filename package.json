@@ -1,0 +1,13 @@
+{
+  "name": "nfms-bihar",
+  "private": true,
+  "type": "module",
+  "description": "Daily snapshot of NFMS state and DISCOM figures, with a Bihar-focused dashboard",
+  "scripts": {
+    "collect": "node scripts/collect.mjs",
+    "cities": "python scripts/cities.py"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0"
+  }
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bihar on NFMS · Supply & Reliability vs States and DISCOMs</title>
+<meta name="description" content="Bihar, SBPDCL and NBPDCL hours of supply, SAIDI/SAIFI and feeder integration compared with every state and DISCOM on the National Feeder Monitoring System. Updated daily.">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <div>
+      <p class="eyebrow">National Feeder Monitoring System · Ministry of Power</p>
+      <h1>Bihar on NFMS</h1>
+      <p class="sub">Hours of supply and reliability of Bihar, SBPDCL and NBPDCL against every state and DISCOM</p>
+    </div>
+    <div class="stamp">
+      <div><span class="dot" id="fresh-dot"></span><span id="fresh">Loading…</span></div>
+      <div class="muted" id="data-days"></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="lede" id="lede">&nbsp;</p>
+    <div class="kpis" id="kpis"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="card" id="discoms">
+    <div class="card-h">
+      <div>
+        <h2>SBPDCL and NBPDCL side by side</h2>
+        <p class="hint">Average daily hours of supply by feeder category, reliability on the latest reported day, and feeder integration.</p>
+      </div>
+    </div>
+    <div class="scroll"><table class="tbl" id="cmp"></table></div>
+  </section>
+
+  <section class="card" id="ranks">
+    <div class="card-h">
+      <div>
+        <h2>Rank among states and DISCOMs</h2>
+        <p class="hint">1 is best: the most hours, or the lowest SAIDI/SAIFI. Only utilities that report a value are counted.</p>
+      </div>
+    </div>
+    <div class="scroll"><table class="tbl" id="rank"></table></div>
+  </section>
+
+  <section class="card" id="compare">
+    <div class="card-h">
+      <div>
+        <h2>Bihar against every state and DISCOM</h2>
+        <p class="hint">Best at the top. Point at or tap a row for its value and data date.</p>
+      </div>
+      <label class="pick">Measure
+        <select id="metric"></select>
+      </label>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="two">
+      <div><h3>States &amp; UTs</h3><div class="chart" id="chart-states"></div></div>
+      <div><h3>DISCOMs</h3><div class="chart" id="chart-discoms"></div></div>
+    </div>
+  </section>
+
+  <section class="card" id="trend">
+    <div class="card-h">
+      <div>
+        <h2>Day by day</h2>
+        <p class="hint" id="trend-hint">One point is added each day the data refreshes.</p>
+      </div>
+      <label class="pick">Measure
+        <select id="metric-trend"></select>
+      </label>
+    </div>
+    <div class="chart" id="chart-trend"></div>
+  </section>
+
+  <section class="card" id="cities">
+    <div class="card-h">
+      <div>
+        <h2>Patna City among major cities</h2>
+        <p class="hint" id="city-hint">Cumulative SAIDI for the month, from the NFMS major-cities report. Lower is better.</p>
+      </div>
+      <label class="pick">Month
+        <select id="month"></select>
+      </label>
+    </div>
+    <div class="city-kpi" id="city-kpi"></div>
+    <div class="chart" id="chart-cities"></div>
+  </section>
+
+  <section class="note" id="notes">
+    <p><b>Read the reliability ranks with care.</b> NFMS shows data as furnished by each utility. Several large utilities report near-zero interruptions, while Bihar's smart-metered feeders log outages automatically, so a low reliability rank partly reflects fuller reporting, not only more frequent supply failure.</p>
+    <details>
+      <summary>About the data</summary>
+      <ul>
+        <li><b>Source:</b> the public NFMS dashboard, <a href="https://nfms.powermin.gov.in/dashboard" target="_blank" rel="noopener">nfms.powermin.gov.in</a>. A scheduled job opens it every night, selects each State/UT and DISCOM in turn, and saves the figures the dashboard shows. Each utility's figures are for its own last refreshed day, shown in the tooltips.</li>
+        <li><b>Hours of supply</b> is the average daily supply per feeder. "Excl. agriculture" leaves out agricultural feeders, which run on rostered supply.</li>
+        <li><b>SAIDI</b> is the average interruption duration per consumer (hours) and <b>SAIFI</b> the average number of interruptions per consumer, from the NFMS reliability tile for the latest day. The national tile is not comparable with state values, so the median state is used for comparison.</li>
+        <li><b>DISCOMs</b> lists each separately reporting utility, plus states that report as one utility.</li>
+        <li><b>Major cities</b> come from NFMS's monthly cumulative reports (Downloads page).</li>
+        <li>Download the data: <a href="data/latest.csv">latest.csv</a> · <a href="data/history.csv">history.csv</a> · <a href="data/cities.json">cities.json</a></li>
+      </ul>
+    </details>
+  </section>
+
+</main>
+
+<footer class="wrap foot">Data: National Feeder Monitoring System (Ministry of Power / RECPDCL), shown as received from utilities. This page is an independent view of that public data.</footer>
+
+<div class="tip" id="tip" hidden></div>
+<script src="assets/app.js"></script>
+</body>
+</html>

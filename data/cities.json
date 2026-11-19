@@ -1,0 +1,543 @@
+{
+ "fetched_at": "2026-11-19T04:30:00Z",
+ "reports": [
+  {
+   "month": "2026-09",
+   "label": "September 2026",
+   "url": "https://nfms.powermin.gov.in/assets/csv/Major_Cities_September_2026_Cumulative_SAIFI_SAIDI.pdf",
+   "status_as_on": "13/10/26",
+   "rows": [
+    {
+     "rank": 1,
+     "state": "Maharashtra",
+     "discom": "AEML",
+     "city": "Mumbai",
+     "saidi_hhmm": "00:00",
+     "saidi_hours": 0.0,
+     "saifi": 0.02
+    },
+    {
+     "rank": 2,
+     "state": "Maharashtra",
+     "discom": "TPCL",
+     "city": "Mumbai",
+     "saidi_hhmm": "00:00",
+     "saidi_hours": 0.0,
+     "saifi": 0.003
+    },
+    {
+     "rank": 3,
+     "state": "Gujarat",
+     "discom": "TPLAHMD",
+     "city": "Ahmedabad",
+     "saidi_hhmm": "00:01",
+     "saidi_hours": 0.017,
+     "saifi": 0.026
+    },
+    {
+     "rank": 4,
+     "state": "Gujarat",
+     "discom": "UGVCL",
+     "city": "Ahmedabad",
+     "saidi_hhmm": "00:01",
+     "saidi_hours": 0.017,
+     "saifi": 0.037
+    },
+    {
+     "rank": 5,
+     "state": "Gujarat",
+     "discom": "PGVCL",
+     "city": "Rajkot",
+     "saidi_hhmm": "00:02",
+     "saidi_hours": 0.033,
+     "saifi": 0.103
+    },
+    {
+     "rank": 6,
+     "state": "Gujarat",
+     "discom": "MGVCL",
+     "city": "Vadodara",
+     "saidi_hhmm": "00:02",
+     "saidi_hours": 0.033,
+     "saifi": 0.069
+    },
+    {
+     "rank": 7,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Vellore",
+     "saidi_hhmm": "00:03",
+     "saidi_hours": 0.05,
+     "saifi": 0.123
+    },
+    {
+     "rank": 8,
+     "state": "Gujarat",
+     "discom": "DGVCL",
+     "city": "Surat",
+     "saidi_hhmm": "00:05",
+     "saidi_hours": 0.083,
+     "saifi": 0.229
+    },
+    {
+     "rank": 9,
+     "state": "Delhi",
+     "discom": "BRPL",
+     "city": "Delhi",
+     "saidi_hhmm": "00:07",
+     "saidi_hours": 0.117,
+     "saifi": 0.167
+    },
+    {
+     "rank": 10,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Chennai",
+     "saidi_hhmm": "00:07",
+     "saidi_hours": 0.117,
+     "saifi": 0.191
+    },
+    {
+     "rank": 11,
+     "state": "Maharashtra",
+     "discom": "BEST",
+     "city": "Mumbai",
+     "saidi_hhmm": "00:05",
+     "saidi_hours": 0.083,
+     "saifi": 0.19
+    },
+    {
+     "rank": 12,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Erode",
+     "saidi_hhmm": "00:08",
+     "saidi_hours": 0.133,
+     "saifi": 0.122
+    },
+    {
+     "rank": 13,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Madurai",
+     "saidi_hhmm": "00:08",
+     "saidi_hours": 0.133,
+     "saifi": 0.19
+    },
+    {
+     "rank": 14,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Salem",
+     "saidi_hhmm": "00:09",
+     "saidi_hours": 0.15,
+     "saifi": 0.482
+    },
+    {
+     "rank": 15,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Trichy",
+     "saidi_hhmm": "00:12",
+     "saidi_hours": 0.2,
+     "saifi": 0.181
+    },
+    {
+     "rank": 16,
+     "state": "Gujarat",
+     "discom": "PGVCL",
+     "city": "Jamnagar",
+     "saidi_hhmm": "00:14",
+     "saidi_hours": 0.233,
+     "saifi": 0.674
+    },
+    {
+     "rank": 17,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Coimbatore",
+     "saidi_hhmm": "00:19",
+     "saidi_hours": 0.317,
+     "saifi": 0.277
+    },
+    {
+     "rank": 18,
+     "state": "Chhattisgarh",
+     "discom": "CSPDCL",
+     "city": "Raipur City",
+     "saidi_hhmm": "00:28",
+     "saidi_hours": 0.467,
+     "saifi": 1.081
+    },
+    {
+     "rank": 19,
+     "state": "Maharashtra",
+     "discom": "MSEDCL",
+     "city": "Nashik",
+     "saidi_hhmm": "00:54",
+     "saidi_hours": 0.9,
+     "saifi": 2.287
+    },
+    {
+     "rank": 20,
+     "state": "Haryana",
+     "discom": "DHBVNL",
+     "city": "Faridabad",
+     "saidi_hhmm": "01:06",
+     "saidi_hours": 1.1,
+     "saifi": 1.756
+    },
+    {
+     "rank": 21,
+     "state": "Andhra Pradesh",
+     "discom": "APEPDCL",
+     "city": "Visakhapatnam",
+     "saidi_hhmm": "01:47",
+     "saidi_hours": 1.783,
+     "saifi": 4.37
+    },
+    {
+     "rank": 22,
+     "state": "Haryana",
+     "discom": "DHBVNL",
+     "city": "Gurugram-II",
+     "saidi_hhmm": "01:52",
+     "saidi_hours": 1.867,
+     "saifi": 3.579
+    },
+    {
+     "rank": 23,
+     "state": "Maharashtra",
+     "discom": "MSEDCL",
+     "city": "Pune",
+     "saidi_hhmm": "02:08",
+     "saidi_hours": 2.133,
+     "saifi": 3.894
+    },
+    {
+     "rank": 24,
+     "state": "Madhya Pradesh",
+     "discom": "MPMKVVCL",
+     "city": "Bhopal",
+     "saidi_hhmm": "02:32",
+     "saidi_hours": 2.533,
+     "saifi": 7.026
+    },
+    {
+     "rank": 25,
+     "state": "Rajasthan",
+     "discom": "JVVNL",
+     "city": "Jaipur",
+     "saidi_hhmm": "03:28",
+     "saidi_hours": 3.467,
+     "saifi": 1.692
+    },
+    {
+     "rank": 26,
+     "state": "Madhya Pradesh",
+     "discom": "MPPKVVCL",
+     "city": "Indore City",
+     "saidi_hhmm": "05:09",
+     "saidi_hours": 5.15,
+     "saifi": 15.806
+    },
+    {
+     "rank": 27,
+     "state": "Bihar",
+     "discom": "SBPDCL",
+     "city": "Patna City",
+     "saidi_hhmm": "08:19",
+     "saidi_hours": 8.317,
+     "saifi": 18.788
+    },
+    {
+     "rank": 28,
+     "state": "Madhya Pradesh",
+     "discom": "MPPOKVVCL",
+     "city": "Jabalpur CC",
+     "saidi_hhmm": "08:33",
+     "saidi_hours": 8.55,
+     "saifi": 20.576
+    },
+    {
+     "rank": 29,
+     "state": "Punjab",
+     "discom": "PSPCL",
+     "city": "Ludhiana",
+     "saidi_hhmm": "12:03",
+     "saidi_hours": 12.05,
+     "saifi": 8.673
+    }
+   ]
+  },
+  {
+   "month": "2026-08",
+   "label": "August 2026",
+   "url": "https://nfms.powermin.gov.in/assets/csv/Major_Cities_August_2026_Cumulative_SAIFI_SAIDI.pdf",
+   "status_as_on": "13/10/26",
+   "rows": [
+    {
+     "rank": 1,
+     "state": "Maharashtra",
+     "discom": "AEML",
+     "city": "Mumbai",
+     "saidi_hhmm": "00:00",
+     "saidi_hours": 0.0,
+     "saifi": 0.01
+    },
+    {
+     "rank": 2,
+     "state": "Maharashtra",
+     "discom": "TPCL",
+     "city": "Mumbai",
+     "saidi_hhmm": "00:00",
+     "saidi_hours": 0.0,
+     "saifi": 0.01
+    },
+    {
+     "rank": 3,
+     "state": "Gujarat",
+     "discom": "TPLAHMD",
+     "city": "Ahmedabad",
+     "saidi_hhmm": "00:01",
+     "saidi_hours": 0.017,
+     "saifi": 0.019
+    },
+    {
+     "rank": 4,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Vellore",
+     "saidi_hhmm": "00:03",
+     "saidi_hours": 0.05,
+     "saifi": 0.074
+    },
+    {
+     "rank": 5,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Trichy",
+     "saidi_hhmm": "00:06",
+     "saidi_hours": 0.1,
+     "saifi": 0.087
+    },
+    {
+     "rank": 6,
+     "state": "Delhi",
+     "discom": "BRPL",
+     "city": "Delhi",
+     "saidi_hhmm": "00:06",
+     "saidi_hours": 0.1,
+     "saifi": 0.175
+    },
+    {
+     "rank": 7,
+     "state": "Maharashtra",
+     "discom": "BEST",
+     "city": "Mumbai",
+     "saidi_hhmm": "00:07",
+     "saidi_hours": 0.117,
+     "saifi": 0.24
+    },
+    {
+     "rank": 8,
+     "state": "Gujarat",
+     "discom": "UGVCL",
+     "city": "Ahmedabad",
+     "saidi_hhmm": "00:07",
+     "saidi_hours": 0.117,
+     "saifi": 0.365
+    },
+    {
+     "rank": 9,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Erode",
+     "saidi_hhmm": "00:09",
+     "saidi_hours": 0.15,
+     "saifi": 0.124
+    },
+    {
+     "rank": 10,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Madurai",
+     "saidi_hhmm": "00:11",
+     "saidi_hours": 0.183,
+     "saifi": 0.372
+    },
+    {
+     "rank": 11,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Chennai",
+     "saidi_hhmm": "00:15",
+     "saidi_hours": 0.25,
+     "saifi": 0.581
+    },
+    {
+     "rank": 12,
+     "state": "Gujarat",
+     "discom": "MGVCL",
+     "city": "Vadodara",
+     "saidi_hhmm": "00:22",
+     "saidi_hours": 0.367,
+     "saifi": 0.732
+    },
+    {
+     "rank": 13,
+     "state": "Gujarat",
+     "discom": "PGVCL",
+     "city": "Rajkot",
+     "saidi_hhmm": "00:23",
+     "saidi_hours": 0.383,
+     "saifi": 1.145
+    },
+    {
+     "rank": 14,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Salem",
+     "saidi_hhmm": "00:33",
+     "saidi_hours": 0.55,
+     "saifi": 1.648
+    },
+    {
+     "rank": 15,
+     "state": "Tamil Nadu",
+     "discom": "TANGEDCO",
+     "city": "Coimbatore",
+     "saidi_hhmm": "00:39",
+     "saidi_hours": 0.65,
+     "saifi": 0.631
+    },
+    {
+     "rank": 16,
+     "state": "Gujarat",
+     "discom": "DGVCL",
+     "city": "Surat",
+     "saidi_hhmm": "00:45",
+     "saidi_hours": 0.75,
+     "saifi": 1.299
+    },
+    {
+     "rank": 17,
+     "state": "Andhra Pradesh",
+     "discom": "APEPDCL",
+     "city": "Visakhapatnam",
+     "saidi_hhmm": "01:59",
+     "saidi_hours": 1.983,
+     "saifi": 3.611
+    },
+    {
+     "rank": 18,
+     "state": "Haryana",
+     "discom": "DHBVNL",
+     "city": "Faridabad",
+     "saidi_hhmm": "02:18",
+     "saidi_hours": 2.3,
+     "saifi": 3.445
+    },
+    {
+     "rank": 19,
+     "state": "Maharashtra",
+     "discom": "MSEDCL",
+     "city": "Pune",
+     "saidi_hhmm": "02:36",
+     "saidi_hours": 2.6,
+     "saifi": 4.532
+    },
+    {
+     "rank": 20,
+     "state": "Haryana",
+     "discom": "DHBVNL",
+     "city": "Gurugram-II",
+     "saidi_hhmm": "02:49",
+     "saidi_hours": 2.817,
+     "saifi": 4.307
+    },
+    {
+     "rank": 21,
+     "state": "Rajasthan",
+     "discom": "JVVNL",
+     "city": "Jaipur",
+     "saidi_hhmm": "03:09",
+     "saidi_hours": 3.15,
+     "saifi": 1.689
+    },
+    {
+     "rank": 22,
+     "state": "Madhya Pradesh",
+     "discom": "MPMKVVCL",
+     "city": "Bhopal",
+     "saidi_hhmm": "03:19",
+     "saidi_hours": 3.317,
+     "saifi": 7.888
+    },
+    {
+     "rank": 23,
+     "state": "Gujarat",
+     "discom": "PGVCL",
+     "city": "Jamnagar",
+     "saidi_hhmm": "03:33",
+     "saidi_hours": 3.55,
+     "saifi": 7.151
+    },
+    {
+     "rank": 24,
+     "state": "Maharashtra",
+     "discom": "MSEDCL",
+     "city": "Nashik",
+     "saidi_hhmm": "03:36",
+     "saidi_hours": 3.6,
+     "saifi": 5.455
+    },
+    {
+     "rank": 25,
+     "state": "Chhattisgarh",
+     "discom": "CSPDCL",
+     "city": "Raipur City",
+     "saidi_hhmm": "03:38",
+     "saidi_hours": 3.633,
+     "saifi": 7.046
+    },
+    {
+     "rank": 26,
+     "state": "Bihar",
+     "discom": "SBPDCL",
+     "city": "Patna City",
+     "saidi_hhmm": "04:05",
+     "saidi_hours": 4.083,
+     "saifi": 17.547
+    },
+    {
+     "rank": 27,
+     "state": "Madhya Pradesh",
+     "discom": "MPPKVVCL",
+     "city": "Indore City",
+     "saidi_hhmm": "04:08",
+     "saidi_hours": 4.133,
+     "saifi": 11.981
+    },
+    {
+     "rank": 28,
+     "state": "Madhya Pradesh",
+     "discom": "MPPOKVVCL",
+     "city": "Jabalpur CC",
+     "saidi_hhmm": "07:40",
+     "saidi_hours": 7.667,
+     "saifi": 16.736
+    },
+    {
+     "rank": 29,
+     "state": "Punjab",
+     "discom": "PSPCL",
+     "city": "Ludhiana",
+     "saidi_hhmm": "14:36",
+     "saidi_hours": 14.6,
+     "saifi": 10.22
+    }
+   ]
+  }
+ ]
+}
