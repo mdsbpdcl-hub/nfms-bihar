@@ -36,6 +36,7 @@
   }
   const hideTip = () => { tip.hidden = true; };
   addEventListener('scroll', hideTip, { passive: true });
+  document.addEventListener('pointerdown', (ev) => { if (!ev.target.closest('.chart')) hideTip(); });
 
   /* ---------- ranking ---------- */
   function rankOf(rows, m, key) {
@@ -52,37 +53,52 @@
   function dots(box, items, o) {
     box.replaceChildren();
     if (!items.length) { box.append(el('div', { class: 'empty' }, 'No values reported for this measure.')); return; }
-    const W = Math.max(300, box.clientWidth), rowH = o.rowH || 16;
+    const W = Math.max(260, box.clientWidth), narrow = W < 520;
+    const rowH = Math.max(o.rowH || 16, narrow ? 20 : 0);
+    const maxLab = narrow ? 16 : 30;
+    const lab = (d) => (d.label.length > maxLab ? d.label.slice(0, maxLab - 1) + '…' : d.label);
+    const real = items.filter((d) => !d.gap);
     const svg = d3.select(box).append('svg').attr('width', W).attr('role', 'img').attr('aria-label', o.aria);
     const probe = svg.append('text');
-    const labW = d3.max(items, (d) => { probe.text(d.label); return probe.node().getComputedTextLength(); });
+    const labW = d3.max(real, (d) => { probe.text(lab(d)); return probe.node().getComputedTextLength(); });
     probe.remove();
-    const m = { t: 24, r: 46, b: 6, l: Math.min(labW + 30, W * 0.46) };
+    const m = { t: 24, r: narrow ? 40 : 46, b: 6, l: Math.min(labW + 30, W * (narrow ? 0.5 : 0.46)) };
     const H = m.t + items.length * rowH + m.b;
     svg.attr('height', H).attr('viewBox', `0 0 ${W} ${H}`);
-    const vals = items.map((d) => d.v).concat(o.ref !== null && o.ref !== undefined ? [o.ref] : []);
+    const vals = real.map((d) => d.v).concat(o.ref !== null && o.ref !== undefined ? [o.ref] : []);
     const lo = o.zero ? 0 : Math.floor(d3.min(vals) - 0.25);
     const hi = o.max !== undefined ? Math.max(o.max, d3.max(vals)) : d3.max(vals) || 1;
     const x = d3.scaleLinear().domain([lo, hi]).range([m.l, W - m.r]).nice();
     const idx = new Map(items.map((d, i) => [d, i]));
     const y = (d) => m.t + idx.get(d) * rowH + rowH / 2;
-    const ticks = x.ticks(Math.max(2, Math.floor((W - m.l - m.r) / 70)));
+    const ticks = x.ticks(Math.max(2, Math.floor((W - m.l - m.r) / 64)));
     svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', x).attr('x2', x).attr('y1', m.t - 4).attr('y2', H - m.b).attr('stroke', 'var(--grid)');
     svg.append('g').selectAll('text').data(ticks).join('text').attr('x', x).attr('y', m.t - 10).attr('text-anchor', 'middle').text((t) => o.fmt(t));
     if (o.ref !== null && o.ref !== undefined) {
       svg.append('line').attr('x1', x(o.ref)).attr('x2', x(o.ref)).attr('y1', m.t - 4).attr('y2', H - m.b).attr('stroke', 'var(--ref)').attr('stroke-dasharray', '4 3');
-      svg.append('text').attr('x', x(o.ref) + 4).attr('y', H - m.b - 2).attr('fill', 'var(--ref)').text('India ' + o.fmt(o.ref));
+      svg.append('text').attr('x', x(o.ref) - 4).attr('y', H - m.b - 2).attr('text-anchor', 'end').attr('fill', 'var(--ref)').text('India ' + o.fmt(o.ref));
     }
-    const g = svg.append('g').selectAll('g').data(items).join('g');
+    svg.append('g').selectAll('text').data(items.filter((d) => d.gap)).join('text').attr('x', m.l - 8).attr('y', (d) => y(d) + 4).attr('text-anchor', 'end').text((d) => `⋯ ${d.n} more`);
+    const g = svg.append('g').selectAll('g').data(real).join('g');
     g.filter((d) => d.color).append('rect').attr('x', 0).attr('width', W).attr('y', (d) => y(d) - rowH / 2).attr('height', rowH).attr('fill', '#f1f5f9');
-    g.append('text').attr('x', 0).attr('y', (d) => y(d) + 4).attr('class', (d) => (d.color ? 'hl' : null)).text((d) => idx.get(d) + 1);
-    g.append('text').attr('x', m.l - 8).attr('y', (d) => y(d) + 4).attr('text-anchor', 'end').attr('class', (d) => (d.color ? 'hl' : null)).text((d) => d.label);
+    g.append('text').attr('x', 0).attr('y', (d) => y(d) + 4).attr('class', (d) => (d.color ? 'hl' : null)).text((d) => d.rank);
+    g.append('text').attr('x', m.l - 8).attr('y', (d) => y(d) + 4).attr('text-anchor', 'end').attr('class', (d) => (d.color ? 'hl' : null)).text(lab);
     g.append('line').attr('x1', x(lo)).attr('x2', (d) => x(d.v)).attr('y1', (d) => y(d)).attr('y2', (d) => y(d)).attr('stroke', (d) => d.color || 'var(--line)').attr('stroke-width', (d) => (d.color ? 2 : 1));
     g.append('circle').attr('cx', (d) => x(d.v)).attr('cy', (d) => y(d)).attr('r', (d) => (d.color ? 5.5 : 3.5)).attr('fill', (d) => d.color || 'var(--muted-dot)').attr('stroke', '#fff').attr('stroke-width', 1.5);
-    g.filter((d) => d.color).append('text').attr('class', 'hl').attr('x', (d) => x(d.v) + 9).attr('y', (d) => y(d) + 4).text((d) => o.fmt(d.v));
+    g.filter((d) => d.color).append('text').attr('class', 'hl').attr('x', (d) => Math.min(x(d.v) + 9, W - 34)).attr('y', (d) => y(d) - (x(d.v) + 9 > W - 34 ? 7 : -4)).text((d) => o.fmt(d.v));
     g.append('rect').attr('x', 0).attr('width', W).attr('y', (d) => y(d) - rowH / 2).attr('height', rowH).attr('fill', 'transparent')
-      .on('pointermove', (ev, d) => showTip(ev, [['t', `#${items.indexOf(d) + 1} of ${items.length} · ${d.label}`], ['', `${o.name}: ${o.fmt(d.v)}`], ...(d.sub ? [['m', d.sub]] : [])]))
-      .on('pointerleave', hideTip);
+      .on('pointermove pointerdown', (ev, d) => showTip(ev, [['t', `#${d.rank} of ${o.total || real.length} · ${d.label}`], ['', `${o.name}: ${o.fmt(d.v)}`], ...(d.sub ? [['m', d.sub]] : [])]))
+      .on('pointerleave', (ev) => { if (ev.pointerType === 'mouse') hideTip(); });
+  }
+
+  // keep the top, the bottom and the rows around the highlighted ones; fold the rest
+  function compact(items, top = 5, bottom = 3, around = 2) {
+    const keep = new Set();
+    items.forEach((d, i) => { if (i < top || i >= items.length - bottom) keep.add(i); if (d.color) for (let j = i - around; j <= i + around; j++) keep.add(j); });
+    const out = []; let skipped = 0;
+    items.forEach((d, i) => { if (keep.has(i)) { if (skipped) { out.push({ gap: true, n: skipped }); skipped = 0; } out.push(d); } else skipped++; });
+    if (skipped) out.push({ gap: true, n: skipped });
+    return out;
   }
 
   /* ---------- line chart ---------- */
@@ -90,7 +106,7 @@
     box.replaceChildren();
     const all = series.flatMap((s) => s.pts);
     if (!all.length) { box.append(el('div', { class: 'empty' }, 'No history yet for this measure.')); return; }
-    const W = Math.max(300, box.clientWidth), H = 280, m = { t: 14, r: 70, b: 28, l: 44 };
+    const W = Math.max(260, box.clientWidth), H = W < 520 ? 230 : 280, m = { t: 14, r: 64, b: 28, l: 40 };
     const svg = d3.select(box).append('svg').attr('width', W).attr('height', H).attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', o.aria);
     const dates = [...new Set(all.map((p) => p.d))].sort();
     const parse = (s) => new Date(s + 'T00:00:00Z');
@@ -116,13 +132,13 @@
     ends.forEach((e) => svg.append('text').attr('x', e.x + 8).attr('y', e.y + 4).attr('class', 'hl').attr('fill', e.c).style('fill', e.c).text(e.t));
     const cross = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).attr('stroke', 'var(--ref)').attr('opacity', 0);
     svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
-      .on('pointermove', (ev) => {
+      .on('pointermove pointerdown', (ev) => {
         const [px] = d3.pointer(ev); const t = x.invert(px);
         const dd = dates.reduce((a, b) => (Math.abs(parse(b) - t) < Math.abs(parse(a) - t) ? b : a));
         cross.attr('x1', x(parse(dd))).attr('x2', x(parse(dd))).attr('opacity', 0.6);
         showTip(ev, [['t', day(dd)], ...series.map((s) => { const p = s.pts.find((q) => q.d === dd); return ['', `${s.name}: ${p ? o.fmt(p.v) : '—'}`]; })]);
       })
-      .on('pointerleave', () => { cross.attr('opacity', 0); hideTip(); });
+      .on('pointerleave', (ev) => { if (ev.pointerType === 'mouse') { cross.attr('opacity', 0); hideTip(); } });
   }
 
   /* ---------- page ---------- */
@@ -174,47 +190,94 @@
     kpi('SAIFI · latest day', d3.format('.2~f')(num(BR.saifi)), '', ['Median state ', b(d3.format('.2~f')(sMed('saifi'))), ' ', pill(rankOf(states, M.saifi, 'BR|ALL'))]);
     kpi('Feeders integrated', fi(num(BR.int_feeders)), 'of ' + fi(num(BR.total_feeders)), ['Comm. ', b(f1(num(BR.comm_pct)) + '%'), ' · smart ', b(f1(num(BR.smart_pct)) + '%')]);
 
-    // comparison table
-    const cmp = document.getElementById('cmp'); cmp.replaceChildren();
-    const cols = [['urban', 'Urban'], ['rural', 'Rural'], ['agri', 'Agri'], ['industrial', 'Industrial'], ['mixed', 'Mixed'], ['hos_excl_agri', 'Excl. agri'], ['hos_incl_agri', 'All'], ['saidi', 'SAIDI (hrs)'], ['saifi', 'SAIFI'], ['total_feeders', 'Feeders'], ['comm_pct', 'Comm. %'], ['smart_pct', 'Smart %']];
-    const th = el('thead');
-    const g1 = el('tr', { class: 'grp' }); g1.append(el('th'), Object.assign(el('th', {}, 'Hours of supply (hrs/day)'), { colSpan: 7 }), Object.assign(el('th', {}, 'Reliability'), { colSpan: 2 }), Object.assign(el('th', {}, 'Feeders'), { colSpan: 3 }));
-    const g2 = el('tr'); g2.append(el('th', {}, 'Utility'), ...cols.map(([, l]) => el('th', {}, l)));
-    th.append(g1, g2); cmp.append(th);
-    const tb = el('tbody');
-    [['BR|SBPDCL', SB], ['BR|NBPDCL', NB], ['BR|ALL', BR], ['ALL|ALL', IN]].forEach(([k, r]) => {
-      if (!r) return;
-      const tr = el('tr', { class: k === 'ALL|ALL' ? 'ref' : '' });
-      const t0 = el('td'); const sw = el('span', { class: 'sw' + (COL[k] ? '' : ' ref') }); if (COL[k]) sw.style.background = COL[k]; t0.append(sw, NAME[k]); tr.append(t0);
-      cols.forEach(([c]) => {
-        const v = num(r[c]); const mm = M[c];
-        let txt = c === 'total_feeders' ? (v === null ? '—' : fi(v)) : mm ? fmt(mm, v) : '—';
-        if (k === 'ALL|ALL' && (c === 'saidi' || c === 'saifi' || (c === 'comm_pct' && !v))) txt = '—';
-        const td = el('td', {}, txt);
-        if ((k === 'BR|SBPDCL' || k === 'BR|NBPDCL') && mm && SB && NB) {
-          const a = num(SB[c]), o2 = num(NB[c]);
-          if (a !== null && o2 !== null && a !== o2) { const best = mm.lower ? Math.min(a, o2) : Math.max(a, o2); if (v === best) td.className = 'best'; }
-        }
-        tr.append(td);
-      });
-      tb.append(tr);
-    });
-    cmp.append(tb);
+    // comparison table (wide: utilities as rows; narrow: utilities as columns)
+    const CMP_GROUPS = [
+      ['Hours of supply (hrs/day)', [['urban', 'Urban'], ['rural', 'Rural'], ['agri', 'Agriculture'], ['industrial', 'Industrial'], ['mixed', 'Mixed'], ['hos_excl_agri', 'Excl. agri'], ['hos_incl_agri', 'All feeders']]],
+      ['Reliability · latest day', [['saidi', 'SAIDI (hrs)'], ['saifi', 'SAIFI']]],
+      ['Feeders', [['total_feeders', 'Feeders'], ['comm_pct', 'Comm. %'], ['smart_pct', 'Smart %']]],
+    ];
+    const UT = [['BR|SBPDCL', SB], ['BR|NBPDCL', NB], ['BR|ALL', BR], ['ALL|ALL', IN]].filter(([, r]) => r);
+    const cell = (k, r, c) => {
+      const v = num(r[c]); const mm = M[c];
+      let txt = c === 'total_feeders' ? (v === null ? '—' : fi(v)) : mm ? fmt(mm, v) : '—';
+      if (k === 'ALL|ALL' && (c === 'saidi' || c === 'saifi' || (c === 'comm_pct' && !v))) txt = '—';
+      const td = el('td', {}, txt);
+      if ((k === 'BR|SBPDCL' || k === 'BR|NBPDCL') && mm && SB && NB) {
+        const a1 = num(SB[c]), o2 = num(NB[c]);
+        if (a1 !== null && o2 !== null && a1 !== o2) { const best = mm.lower ? Math.min(a1, o2) : Math.max(a1, o2); if (v === best) td.className = 'best'; }
+      }
+      return td;
+    };
+    const swatch = (k) => { const sw = el('span', { class: 'sw' + (COL[k] ? '' : ' ref') }); if (COL[k]) sw.style.background = COL[k]; return sw; };
+    const drawCmp = (narrow) => {
+      const box = document.getElementById('cmp-box'); box.replaceChildren();
+      const t = el('table', { class: 'tbl' + (narrow ? ' tbl-narrow' : '') });
+      const th = el('thead'), tb = el('tbody');
+      if (!narrow) {
+        const g1 = el('tr', { class: 'grp' }); g1.append(el('th'));
+        CMP_GROUPS.forEach(([gname, cs]) => g1.append(Object.assign(el('th', {}, gname), { colSpan: cs.length })));
+        const g2 = el('tr'); g2.append(el('th', {}, 'Utility'), ...CMP_GROUPS.flatMap(([, cs]) => cs.map(([, l]) => el('th', {}, l))));
+        th.append(g1, g2);
+        UT.forEach(([k, r]) => {
+          const tr = el('tr', { class: k === 'ALL|ALL' ? 'ref' : '' });
+          const t0 = el('td'); t0.append(swatch(k), NAME[k]); tr.append(t0);
+          CMP_GROUPS.forEach(([, cs]) => cs.forEach(([c]) => tr.append(cell(k, r, c))));
+          tb.append(tr);
+        });
+      } else {
+        const h = el('tr'); h.append(el('th'));
+        UT.forEach(([k]) => { const c = el('th'); c.append(swatch(k), NAME[k]); h.append(c); });
+        th.append(h);
+        CMP_GROUPS.forEach(([gname, cs]) => {
+          const gr = el('tr', { class: 'sec' }); gr.append(Object.assign(el('td', {}, gname), { colSpan: UT.length + 1 })); tb.append(gr);
+          cs.forEach(([c, l]) => { const tr = el('tr'); tr.append(el('td', {}, l)); UT.forEach(([k, r]) => { const td = cell(k, r, c); if (k === 'ALL|ALL') td.classList.add('refc'); tr.append(td); }); tb.append(tr); });
+        });
+      }
+      t.append(th, tb); box.append(t);
+    };
 
-    // rank table
-    const rk = document.getElementById('rank'); rk.replaceChildren();
-    const rh = el('thead'); const rr = el('tr'); rr.append(...['Measure', 'Bihar value', 'Bihar among states', 'SBPDCL value', 'SBPDCL among DISCOMs', 'NBPDCL value', 'NBPDCL among DISCOMs'].map((t) => el('th', {}, t))); rh.append(rr); rk.append(rh);
-    const rb = el('tbody');
-    const chip = (r) => { const s = el('span', { class: 'rk ' + band(r) }, r.rank ? `${r.rank} / ${r.n}` : '—'); return s; };
-    METRICS.forEach((m) => {
-      const tr = el('tr');
-      const td = (x) => { const c = el('td'); c.append(x); return c; };
-      tr.append(el('td', {}, m.label), el('td', {}, fmt(m, num(BR[m.id]))), td(chip(rankOf(states, m, 'BR|ALL'))),
-        el('td', {}, fmt(m, num(SB?.[m.id]))), td(chip(rankOf(discoms, m, 'BR|SBPDCL'))),
-        el('td', {}, fmt(m, num(NB?.[m.id]))), td(chip(rankOf(discoms, m, 'BR|NBPDCL'))));
-      rb.append(tr);
-    });
-    rk.append(rb);
+    // rank table (wide: table; narrow: one compact card per measure)
+    const chip = (r) => el('span', { class: 'rk ' + band(r) }, r.rank ? `${r.rank} / ${r.n}` : '—');
+    const drawRankTbl = (narrow) => {
+      const box = document.getElementById('rank-box'); box.replaceChildren();
+      if (!narrow) {
+        const t = el('table', { class: 'tbl' });
+        const rh = el('thead'); const rr = el('tr'); rr.append(...['Measure', 'Bihar value', 'Bihar among states', 'SBPDCL value', 'SBPDCL among DISCOMs', 'NBPDCL value', 'NBPDCL among DISCOMs'].map((x2) => el('th', {}, x2))); rh.append(rr);
+        const rb = el('tbody');
+        METRICS.forEach((m) => {
+          const tr = el('tr'); const td = (x2) => { const c = el('td'); c.append(x2); return c; };
+          tr.append(el('td', {}, m.label), el('td', {}, fmt(m, num(BR[m.id]))), td(chip(rankOf(states, m, 'BR|ALL'))),
+            el('td', {}, fmt(m, num(SB?.[m.id]))), td(chip(rankOf(discoms, m, 'BR|SBPDCL'))),
+            el('td', {}, fmt(m, num(NB?.[m.id]))), td(chip(rankOf(discoms, m, 'BR|NBPDCL'))));
+          rb.append(tr);
+        });
+        t.append(rh, rb); box.append(t);
+      } else {
+        const list = el('div', { class: 'rk-list' });
+        METRICS.forEach((m) => {
+          const card = el('div', { class: 'rk-card' }); card.dataset.m = m.id;
+          card.append(el('div', { class: 'rk-t' }, m.label));
+          const grid = el('div', { class: 'rk-g' });
+          [['BR|ALL', BR, states, 'states'], ['BR|SBPDCL', SB, discoms, 'DISCOMs'], ['BR|NBPDCL', NB, discoms, 'DISCOMs']].forEach(([k, r, pool]) => {
+            const c = el('div', { class: 'rk-c' });
+            const n1 = el('div', { class: 'rk-n' }); n1.append(swatch(k), NAME[k]);
+            c.append(n1, el('div', { class: 'rk-v' }, fmt(m, num(r?.[m.id]))), chip(rankOf(pool, m, k)));
+            grid.append(c);
+          });
+          card.append(grid); list.append(card);
+        });
+        box.append(list);
+        const cards = [...list.children];
+        if (innerWidth < 640 && cards.length > 4) {
+          let open = false;
+          const btn = el('button', { type: 'button', class: 'more' });
+          const KEY = ['hos_excl_agri', 'hos_incl_agri', 'saidi', 'saifi'];
+          const set = () => { cards.forEach((c) => { c.hidden = !open && !KEY.includes(c.dataset.m); }); btn.textContent = open ? 'Show fewer measures' : `Show all ${cards.length} measures`; };
+          btn.addEventListener('click', () => { open = !open; set(); });
+          set(); box.append(btn);
+        }
+      }
+    };
 
     // legend
     const lg = document.getElementById('legend'); lg.replaceChildren();
@@ -227,6 +290,8 @@
     const qs = new URLSearchParams(location.search);
     if (M[qs.get('m')]) sel.value = selT.value = qs.get('m');
 
+    let showAll = false;
+    document.getElementById('more-discoms').addEventListener('click', () => { showAll = !showAll; drawRank(); });
     const drawRank = () => {
       const m = M[sel.value];
       const mk = (list, which) => list.filter((r) => num(r[m.id]) !== null).map((r) => ({
@@ -235,8 +300,14 @@
       })).sort((a, z) => (m.lower ? a.v - z.v : z.v - a.v));
       const ref = m.lower ? null : num(IN?.[m.id]);
       const o = { ref, fmt: (v) => fmt(m, v), name: m.short, zero: !m.hrs, max: m.hrs ? 24 : m.pct ? 100 : undefined };
-      dots(document.getElementById('chart-states'), mk(states, 'states'), { ...o, rowH: 18, aria: `States ranked by ${m.label}` });
-      dots(document.getElementById('chart-discoms'), mk(discoms, 'discoms'), { ...o, rowH: 14, aria: `DISCOMs ranked by ${m.label}` });
+      const rk = (arr) => { arr.forEach((d, i) => { d.rank = i + 1; }); return arr; };
+      const st = rk(mk(states, 'states')), di = rk(mk(discoms, 'discoms'));
+      dots(document.getElementById('chart-states'), st, { ...o, rowH: 18, total: st.length, aria: `States ranked by ${m.label}` });
+      const small = innerWidth < 900;
+      const btn = document.getElementById('more-discoms');
+      btn.hidden = !small;
+      btn.textContent = showAll ? 'Show fewer' : `Show all ${di.length} DISCOMs`;
+      dots(document.getElementById('chart-discoms'), small && !showAll ? compact(di) : di, { ...o, rowH: 14, total: di.length, aria: `DISCOMs ranked by ${m.label}` });
     };
 
     // trend
@@ -263,19 +334,20 @@
       kp.replaceChildren();
       if (!rep) { box.replaceChildren(el('div', { class: 'empty' }, 'No city report available yet.')); return; }
       document.getElementById('city-hint').textContent = `Cumulative SAIDI for ${rep.label}, NFMS major-cities report${rep.status_as_on ? ' (status as on ' + rep.status_as_on + ')' : ''}. Lower is better.`;
-      const items = rep.rows.map((r) => ({ label: `${r.city} (${r.discom})`, v: num(r.saidi_hours), color: /^patna/i.test(r.city) ? 'var(--sb)' : null, sub: `SAIDI ${r.saidi_hhmm} · SAIFI ${r.saifi} · ${r.state}` })).sort((a, z) => a.v - z.v);
+      const items = rep.rows.map((r) => ({ label: innerWidth < 640 ? r.city : `${r.city} (${r.discom})`, v: num(r.saidi_hours), color: /^patna/i.test(r.city) ? 'var(--sb)' : null, sub: `${r.discom}, ${r.state} · SAIDI ${r.saidi_hhmm} · SAIFI ${r.saifi}` })).sort((a, z) => a.v - z.v);
+      items.forEach((d, i) => { d.rank = i + 1; });
       const p = rep.rows.find((r) => /^patna/i.test(r.city));
       const pi = items.findIndex((d) => /^patna/i.test(d.label));
       const k = (t, v) => { const d = el('div', {}, t); d.prepend(el('b', {}, v)); kp.append(d); };
       if (p) { k('Patna City SAIDI (hh:mm)', p.saidi_hhmm); k('SAIFI', String(p.saifi)); k('Position (lower SAIDI is better)', `${pi + 1} of ${items.length}`); }
       else kp.append(el('div', {}, 'Patna City is not in this month\'s report.'));
-      dots(box, items, { ref: null, zero: true, rowH: 17, name: 'SAIDI', fmt: hhmm, aria: `Major cities ranked by SAIDI, ${rep.label}` });
+      dots(box, items, { ref: null, zero: true, rowH: 17, total: items.length, name: 'SAIDI', fmt: hhmm, aria: `Major cities ranked by SAIDI, ${rep.label}` });
     };
 
     sel.addEventListener('change', drawRank);
     selT.addEventListener('change', drawTrend);
     selM.addEventListener('change', drawCities);
-    const all = () => { drawRank(); drawTrend(); drawCities(); };
+    const all = () => { const nar = innerWidth < 1000; drawCmp(nar); drawRankTbl(nar); drawRank(); drawTrend(); drawCities(); };
     all();
     let w = innerWidth; addEventListener('resize', () => { if (Math.abs(innerWidth - w) > 30) { w = innerWidth; all(); } });
   }
