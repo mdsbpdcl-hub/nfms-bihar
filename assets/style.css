@@ -162,3 +162,5 @@ details li { margin-bottom: 4px; }
   body { background: #fff; }
   .card { break-inside: avoid; }
 }
+
+.about { padding: 4px 4px 28px; font-size: 13px; }

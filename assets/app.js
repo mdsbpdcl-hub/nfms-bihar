@@ -320,7 +320,7 @@
         pts: hist.filter((r) => r.key === k && num(r[m.id]) !== null).map((r) => ({ d: r.snapshot_date, v: num(r[m.id]) })).sort((a, z) => (a.d < z.d ? -1 : 1)),
       }));
       const nd = new Set(hist.map((r) => r.snapshot_date)).size;
-      document.getElementById('trend-hint').textContent = nd > 1 ? `${nd} daily snapshots. Point at the chart for each day's values.` : 'History starts today; a point is added each night when the data refreshes.';
+      document.getElementById('trend-hint').textContent = nd > 1 ? `${nd} days` : 'Builds up daily';
       lines(document.getElementById('chart-trend'), series, { fmt: (v) => fmt(m, v), hrs: m.hrs, zero: m.pct, aria: `${m.label} over time for Bihar, SBPDCL, NBPDCL` });
     };
 
@@ -333,13 +333,13 @@
       const box = document.getElementById('chart-cities'), kp = document.getElementById('city-kpi');
       kp.replaceChildren();
       if (!rep) { box.replaceChildren(el('div', { class: 'empty' }, 'No city report available yet.')); return; }
-      document.getElementById('city-hint').textContent = `Cumulative SAIDI for ${rep.label}, NFMS major-cities report${rep.status_as_on ? ' (status as on ' + rep.status_as_on + ')' : ''}. Lower is better.`;
+      document.getElementById('city-hint').textContent = `Cumulative SAIDI, ${rep.label} · lower is better`;
       const items = rep.rows.map((r) => ({ label: innerWidth < 640 ? r.city : `${r.city} (${r.discom})`, v: num(r.saidi_hours), color: /^patna/i.test(r.city) ? 'var(--sb)' : null, sub: `${r.discom}, ${r.state} · SAIDI ${r.saidi_hhmm} · SAIFI ${r.saifi}` })).sort((a, z) => a.v - z.v);
       items.forEach((d, i) => { d.rank = i + 1; });
       const p = rep.rows.find((r) => /^patna/i.test(r.city));
       const pi = items.findIndex((d) => /^patna/i.test(d.label));
       const k = (t, v) => { const d = el('div', {}, t); d.prepend(el('b', {}, v)); kp.append(d); };
-      if (p) { k('Patna City SAIDI (hh:mm)', p.saidi_hhmm); k('SAIFI', String(p.saifi)); k('Position (lower SAIDI is better)', `${pi + 1} of ${items.length}`); }
+      if (p) { k('Patna City SAIDI (hh:mm)', p.saidi_hhmm); k('SAIFI', String(p.saifi)); k('Position', `${pi + 1} of ${items.length}`); }
       else kp.append(el('div', {}, 'Patna City is not in this month\'s report.'));
       dots(box, items, { ref: null, zero: true, rowH: 17, total: items.length, name: 'SAIDI', fmt: hhmm, aria: `Major cities ranked by SAIDI, ${rep.label}` });
     };
